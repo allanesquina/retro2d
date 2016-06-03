@@ -4,7 +4,7 @@ var Enemy = function(props) {
       this.props = props;
     },
     stateToProp: function(game) {
-      // this.props.text = game.state.ammor;
+      // this.props.text = game.state.ammo;
     },
     onEnterFrame: function(game) {
       this.props.y = this.props.y + 1;

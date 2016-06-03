@@ -1,7 +1,7 @@
-var AmmorComponent = Object.assign({}, GameObject, {
+var AmmoComponent = Object.assign({}, GameObject, {
   init: function(state) {
     this.props = {
-      name: 'TextAmmor',
+      name: 'TextAmmo',
       type: 'text',
       font: '18px Arial',
       x: 430,
@@ -9,11 +9,11 @@ var AmmorComponent = Object.assign({}, GameObject, {
     };
   },
   stateToProp: function(game) {
-    this.props.text = game.state.ammor;
+    this.props.text = game.state.ammo;
   },
   onEnterFrame: function(game) {
-    if (game.state.ammor === 0) {
-      game.setState({ammor: 0});
+    if (game.state.ammo === 0) {
+      game.setState({ammo: 0});
     }
   }
 });

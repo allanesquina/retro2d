@@ -1,7 +1,7 @@
 var TextCache = Object.assign({}, GameObject, {
   init: function(state) {
     this.props = {
-      name: 'TextAmmor',
+      name: 'TextAmmo',
       type: 'text',
       font: '18px Arial',
       x: 230,

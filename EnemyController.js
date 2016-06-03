@@ -3,7 +3,7 @@ var EnemyController = Object.assign({}, GameObject, {
     this.props = { name: 'EnemyController', type: 'ctrl' };
   },
   stateToProp: function(game) {
-    // this.props.text = game.state.ammor;
+    // this.props.text = game.state.ammo;
   },
   onEnterFrame: function(game) {
     var self = this;

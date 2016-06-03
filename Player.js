@@ -18,8 +18,8 @@ var player = Object.assign({}, GameObject, {
     if (this.props.isShooting) {
       if (!this.props.interval) {
         this.props.interval = setTimeout(() => {
-          if (game.state.ammor > 0) {
-            game.setState({ammor: game.state.ammor - 1});
+          if (game.state.ammo > 0) {
+            game.setState({ammo: game.state.ammo - 1});
 
             game.connect(bullet({
               type: 'rect',
@@ -82,7 +82,7 @@ var player = Object.assign({}, GameObject, {
     if (e.keyCode === 66) {
       if (game.state.cache > 300) {
         game.setState({
-          ammor: game.state.ammor + 100,
+          ammo: game.state.ammo + 100,
           cache: game.state.cache - 300
         });
       }
