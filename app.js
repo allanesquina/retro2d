@@ -1,13 +1,47 @@
-(function(window, document) {
-  'use strict';
+let player = new Player({
+  name: 'Player',
+  isShoting: false,
+  type: 'rect',
+  x: 0,
+  y: 270,
+  w: 30,
+  h:30
+});
 
-  // Config
-  var game = Game('stage', 500, 300);
-  game.setState({msg: 'Waiting', ammo: 500, cache: 1000 });
-  game.connect(player);
-  game.connect(AmmoComponent);
-  game.connect(TextCache);
-  game.connect(EnemyController);
-  game.render();
+let textAmmo = new AmmoComponent({
+  name: 'TextAmmo',
+  type: 'text',
+  font: '18px Arial',
+  x: 430,
+  y: 25
+});
 
-}(window, document));
+
+let enemyCtr = new EnemyController({
+  name: 'EnemyController',
+  type: 'ctrl'
+});
+
+let textCache = new TextCache({
+  name: 'TextAmmo',
+  type: 'text',
+  font: '18px Arial',
+  x: 230,
+  y: 25
+});
+
+let fightZone = new GameZone();
+fightZone.connect(player);
+fightZone.connect(textAmmo);
+fightZone.connect(textCache);
+fightZone.connect(enemyCtr);
+fightZone.setState({
+  msg: 'Waiting',
+  ammo: 500,
+  cache: 1000
+});
+
+// Config
+let game = new Game('stage', 500, 300);
+game.setZone(fightZone);
+game.render();

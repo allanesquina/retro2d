@@ -1,19 +1,12 @@
-var player = Object.assign({}, GameObject, {
-  init: function(state) {
-    this.props = {
-      name: 'Player',
-      isShoting: false,
-      type: 'rect',
-      x: 0,
-      y: 270,
-      w: 30,
-      h:30
-    };
-  },
-  onEnterFrame: function(game) {
-    var speed = 10;
-    var self = this;
-    var frameRateLimit = 40;
+class Player extends GameObject {
+  constructor(props) {
+    super(props);
+    this.props = props;
+  }
+
+  onEnterFrame(game) {
+    const speed = 10;
+    const frameRateLimit = 60;
 
     if (this.props.isShooting) {
       if (!this.props.interval) {
@@ -21,10 +14,11 @@ var player = Object.assign({}, GameObject, {
           if (game.state.ammo > 0) {
             game.setState({ammo: game.state.ammo - 1});
 
-            game.connect(bullet({
+            game.connect(new Bullet({
+              name: 'Bullet',
               type: 'rect',
               x: this.props.x + ((this.props.w / 2) - (5/2)),
-              y: (game.state.stage.height - this.props.h),
+              y: (game.globalState.stage.height - this.props.h),
               w: 5,
               h: 8
             }));
@@ -44,14 +38,15 @@ var player = Object.assign({}, GameObject, {
     }
 
     if (this.props.isWalkingToRight) {
-      if (this.props.x + this.props.w < game.state.stage.width) {
+      if (this.props.x + this.props.w < game.globalState.stage.width) {
         this.props.x = this.props.x + speed;
       } else {
-        this.props.x = game.state.stage.width - this.props.w;
+        this.props.x = game.globalState.stage.width - this.props.w;
       }
     }
-  },
-  onKeyUp: function(e, game) {
+  }
+
+  onKeyUp(e, game) {
     // Space or D
     if (e.keyCode === 32 || e.keyCode === 68) {
       this.props.isShooting = false;
@@ -64,12 +59,14 @@ var player = Object.assign({}, GameObject, {
     if (e.keyCode === 37 || e.keyCode === 72) {
       this.props.isWalkingToLeft = false;
     }
-  },
-  onKeyPress: function(e, game) {
+  }
+
+  onKeyPress(e, game) {
     // Space or D
-  },
-  onKeyDown: function(e, game) {
-    var space = this.props.h;
+  }
+
+  onKeyDown(e, game) {
+    const space = this.props.h;
     //right
     if (e.keyCode === 39 || e.keyCode === 76) {
       this.props.isWalkingToRight = true;
@@ -104,4 +101,4 @@ var player = Object.assign({}, GameObject, {
       this.props.isShooting = true;      // Space or D
     }
   }
-});
+}

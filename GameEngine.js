@@ -1,77 +1,88 @@
-function Game(id, w, h) {
-  var canvas = document.getElementById(id || 'stage');
-  var context = canvas.getContext('2d');
-  var state = {
-    stage: {
-      height: h,
-      width: w
-    }
-  };
+class Game {
+  constructor(id, w, h) {
+    this.canvas = document.getElementById(id || 'stage');
+    this.context = this.canvas.getContext('2d');
+    this.state = {
+      stage: {
+        height: h,
+        width: w
+      }
+    };
 
-  var objs = [];
+    this.objs = [];
+    this.render = this.render.bind(this);
 
-  function getGameEventObject() {
+    this.bindEvents();
+  }
+
+  getGameEventObject() {
     return {
-      state: state,
-      setState: setState,
-      connect: connect
+      state: this.zone.state,
+      setState: this.zone.setState,
+      connect: this.zone.connect,
+      globalState: this.state,
+      setGlobalState: this.setState,
     };
   }
 
-  document.addEventListener('keydown', function(e) {
-    console.log('keyDown', e.keyCode);
-    objs.map(function(obj) {
-      (obj.onKeyDown && obj.onKeyDown(e, getGameEventObject()));
+  bindEvents() {
+    document.addEventListener('keydown', (e) => {
+      this.objs.map((obj) => {
+        (obj.onKeyDown && obj.onKeyDown(e, this.getGameEventObject()));
+      });
     });
-  });
 
-  document.addEventListener('keyup', function(e) {
-    console.log('keyUp', e.keyCode);
-    objs.map(function(obj) {
-      (obj.onKeyUp && obj.onKeyUp(e, getGameEventObject()));
+    document.addEventListener('keyup', (e) => {
+      this.objs.map((obj) => {
+        (obj.onKeyUp && obj.onKeyUp(e, this.getGameEventObject()));
+      });
     });
-  });
 
-  document.addEventListener('keypress', function(e) {
-    console.log('keyPress', e.keyCode);
-    objs.map(function(obj) {
-      (obj.onKeyPress && obj.onKeyPress(e, getGameEventObject()));
-    });
-  });
-
-  function cicle() {
-    window.requestAnimationFrame(render);
-  }
-
-  function render() {
-    context.clearRect(0, 0, w, h);
-    objs.map(function(obj, index) {
-      (obj.stateToProp && obj.stateToProp(getGameEventObject()));
-      (obj.onEnterFrame && obj.onEnterFrame(getGameEventObject()));
-      obj.render(context, state);
-      (obj.onCollision && obj.onCollision(collisionCalc(obj, index, objs), getGameEventObject()));
-    });
-    cicle();
-  }
-
-  function connect(Component) {
-    var index = objs.push(Component);
-    Component.init(state)
-    Component.setDisconnectFn(function () {
-      delete objs[index-1];
+    document.addEventListener('keypress', (e) => {
+      this.objs.map((obj) => {
+        (obj.onKeyPress && obj.onKeyPress(e, this.getGameEventObject()));
+      });
     });
   }
 
-  function setState(newState) {
+
+  cicle() {
+    window.requestAnimationFrame(this.render);
+  }
+
+  render() {
+    this.context.clearRect(0, 0, this.state.stage.width, this.state.stage.height);
+    this.objs.map((obj, index) => {
+      (obj.stateToProp && obj.stateToProp(this.getGameEventObject()));
+      (obj.onEnterFrame && obj.onEnterFrame(this.getGameEventObject()));
+      obj.render(this.context, this.state);
+      (obj.onCollision && obj.onCollision(this.collisionCalc(obj, index, this.objs), this.getGameEventObject()));
+    });
+    this.cicle();
+  }
+
+  connect(Component) {
+    const index = this.objs.push(Component);
+    Component.setDisconnectFn(() => {
+      delete this.objs[index-1];
+    });
+  }
+
+  setZone(zone) {
+    this.objs = zone.objs;
+    this.zone = zone;
+  }
+
+  setState(newState) {
     for (var k in newState) {
       if (newState.hasOwnProperty(k)) {
-        state[k] = newState[k];
+        this.state[k] = newState[k];
       }
     }
   }
 
-  function collisionCalc(target, index, objs) {
-    return objs.filter(function(obj, j) {
+  collisionCalc(target, index, objs) {
+    return objs.filter((obj, j) => {
       return (
         (target.props.x + target.props.w) >= obj.props.x &&
         target.props.x <= (obj.props.x + obj.props.w) &&
@@ -81,10 +92,4 @@ function Game(id, w, h) {
       );
     });
   }
-
-  return {
-    connect: connect,
-    render: cicle,
-    setState: setState
-  };
 };

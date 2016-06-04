@@ -1,19 +1,15 @@
-var AmmoComponent = Object.assign({}, GameObject, {
-  init: function(state) {
-    this.props = {
-      name: 'TextAmmo',
-      type: 'text',
-      font: '18px Arial',
-      x: 430,
-      y: 25
-    };
-  },
-  stateToProp: function(game) {
+class AmmoComponent extends GameObject {
+  constructor(props) {
+    super(props);
+    this.props = props;
+  }
+  stateToProp(game) {
     this.props.text = game.state.ammo;
-  },
-  onEnterFrame: function(game) {
+  }
+
+  onEnterFrame(game) {
     if (game.state.ammo === 0) {
       game.setState({ammo: 0});
     }
   }
-});
+}

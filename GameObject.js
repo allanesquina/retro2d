@@ -1,8 +1,13 @@
-var GameObject = {
-  setDisconnectFn: function(fn) {
+class GameObject {
+  constructor(props) {
+    this.props = props;
+  }
+
+  setDisconnectFn(fn) {
     this.disconnect = fn;
-  },
-  render: function(ctx, state) {
+  }
+
+  render(ctx, state) {
     switch (this.props.type) {
       case 'rect':
         ctx.fillStyle = '#888';
@@ -15,4 +20,4 @@ var GameObject = {
       default:
     }
   }
-};
+}
