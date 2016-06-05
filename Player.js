@@ -6,7 +6,7 @@ class Player extends GameObject {
 
   onEnterFrame(game) {
     const speed = 10;
-    const frameRateLimit = 0;
+    const frameRateLimit = 50;
 
     if (this.props.isShooting) {
       if (!this.props.interval) {
@@ -18,78 +18,6 @@ class Player extends GameObject {
               name: 'Bullet',
               type: 'rect',
               x: this.props.x + ((this.props.w / 2) - (5/2)),
-              y: (game.globalState.stage.height - this.props.h),
-              w: 5,
-              h: 8
-            }));
-
-            game.connect(new Bullet({
-              name: 'Bullet',
-              type: 'rect',
-              x: this.props.x + (this.props.w + 40 ),
-              y: (game.globalState.stage.height - this.props.h),
-              w: 5,
-              h: 8
-            }));
-
-            game.connect(new Bullet({
-              name: 'Bullet',
-              type: 'rect',
-              x: this.props.x + (this.props.w - 40 ),
-              y: (game.globalState.stage.height - this.props.h),
-              w: 5,
-              h: 8
-            }));
-
-            game.connect(new Bullet({
-              name: 'Bullet',
-              type: 'rect',
-              x: this.props.x + ((this.props.w) + (60)),
-              y: (game.globalState.stage.height - this.props.h),
-              w: 5,
-              h: 8
-            }));
-
-            game.connect(new Bullet({
-              name: 'Bullet',
-              type: 'rect',
-              x: this.props.x + ((this.props.w) - (60)),
-              y: (game.globalState.stage.height - this.props.h),
-              w: 5,
-              h: 8
-            }));
-
-            game.connect(new Bullet({
-              name: 'Bullet',
-              type: 'rect',
-              x: this.props.x + ((this.props.w) - (100)),
-              y: (game.globalState.stage.height - this.props.h),
-              w: 5,
-              h: 8
-            }));
-
-            game.connect(new Bullet({
-              name: 'Bullet',
-              type: 'rect',
-              x: this.props.x + ((this.props.w) + (100)),
-              y: (game.globalState.stage.height - this.props.h),
-              w: 5,
-              h: 8
-            }));
-
-            game.connect(new Bullet({
-              name: 'Bullet',
-              type: 'rect',
-              x: this.props.x + ((this.props.w) + (140)),
-              y: (game.globalState.stage.height - this.props.h),
-              w: 5,
-              h: 8
-            }));
-
-            game.connect(new Bullet({
-              name: 'Bullet',
-              type: 'rect',
-              x: this.props.x + ((this.props.w) - (140)),
               y: (game.globalState.stage.height - this.props.h),
               w: 5,
               h: 8

@@ -1,16 +1,17 @@
 class Game {
-  constructor(id, w, h) {
+  constructor(id, w, h, frameSkip) {
     this.canvas = document.getElementById(id || 'stage');
     this.context = this.canvas.getContext('2d');
     this.state = {
       stage: {
         height: h,
-        width: w
+        width: w,
+        frameSkip
       }
     };
 
     this.render = this.render.bind(this);
-    this.gameObjectInteration = this.gameObjectInteration.bind(this);
+    this.walkThroughGameObjects = this.walkThroughGameObjects.bind(this);
 
     this.bindEvents();
   }
@@ -27,35 +28,20 @@ class Game {
 
   bindEvents() {
     document.addEventListener('keydown', (e) => {
-      const indexes = this.zone.objectsIndexes;
-      const objs = this.zone.objs;
-      this.zone.objectsIndexes.map((key) => {
-        const obj = objs[key];
-        if (obj) {
-          (obj.onKeyDown && obj.onKeyDown(e, this.getGameEventObject()));
-        }
+      this.walkThroughGameObjects((obj, i) => {
+        (obj.onKeyDown && obj.onKeyDown(e, this.getGameEventObject()));
       });
     });
 
     document.addEventListener('keyup', (e) => {
-      const indexes = this.zone.objectsIndexes;
-      const objs = this.zone.objs;
-      this.zone.objectsIndexes.map((key) => {
-        const obj = objs[key];
-        if (obj) {
-          (obj.onKeyUp && obj.onKeyUp(e, this.getGameEventObject()));
-        }
+      this.walkThroughGameObjects((obj, i) => {
+        (obj.onKeyUp && obj.onKeyUp(e, this.getGameEventObject()));
       });
     });
 
     document.addEventListener('keypress', (e) => {
-      const indexes = this.zone.objectsIndexes;
-      const objs = this.zone.objs;
-      this.zone.objectsIndexes.map((key) => {
-        const obj = objs[key];
-        if (obj) {
-          (obj.onKeyPress && obj.onKeyPress(e, this.getGameEventObject()));
-        }
+      this.walkThroughGameObjects((obj, i) => {
+        (obj.onKeyPress && obj.onKeyPress(e, this.getGameEventObject()));
       });
     });
   }
@@ -65,27 +51,43 @@ class Game {
   }
 
   render() {
-    // const { indexes, indexesLength, objs } = this.zone;
-    this.context.clearRect(0, 0, this.state.stage.width, this.state.stage.height);
-    const indexes = this.zone.objectsIndexes;
-    const indexesLength = this.zone.objectsIndexesLength;
-    const objs = this.zone.objs;
-
-    for (let i = 0, j = 0; j < this.zone.objectsIndexesLength; i++) {
-      const obj = objs[indexes[i]];
-      if (obj) {
-        (obj.stateToProp && obj.stateToProp(this.getGameEventObject()));
-        (obj.onEnterFrame && obj.onEnterFrame(this.getGameEventObject()));
-        obj.render(this.context, this.state);
-        (obj.onCollision && obj.onCollision(this.collisionCalc(obj, i, indexes), this.getGameEventObject()));
-        j++;
-      }
+    if (!this.interval) {
+      this.interval = setTimeout(() => {
+        this.interval = null;
+        this.context.clearRect(0, 0, this.state.stage.width, this.state.stage.height);
+        this.walkThroughGameObjects((obj, i) => {
+          (obj.stateToProp && obj.stateToProp(this.getGameEventObject()));
+          (obj.onEnterFrame && obj.onEnterFrame(this.getGameEventObject()));
+          obj.render(this.context, this.state);
+          (obj.onCollision && obj.onCollision(this.collisionCalc(obj, i), this.getGameEventObject()));
+        });
+      }, this.state.stage.frameSkip);
     }
 
     this.cicle();
   }
 
-  gameObjectInteration(fn) {
+  walkThroughGameObjects(fn) {
+    const gameIndexes = this.zone.objectsIndexes;
+    const gameIndexesLength = this.zone.objectsIndexesLength;
+    const objs = this.zone.objs;
+    const margin = this.state.stage.frameSkip === 0 ? 300 : 60;
+    let i = 0;
+    let j = 0;
+    let n = 0;
+
+    for (; j < gameIndexesLength; i += 1) {
+      const obj = objs[gameIndexes[i]];
+      if (obj) {
+        fn(obj, i, j, n);
+        j++;
+      } else {
+        n++;
+        if(n >= margin) {
+          j++;
+        }
+      }
+    }
   }
 
   setZone(zone) {
@@ -100,27 +102,20 @@ class Game {
     }
   }
 
-  collisionCalc(target, index, indexes) {
-    const gameIndexes = this.zone.objectsIndexes;
-    const gameIndexesLength = this.zone.objectsIndexesLength;
-    const objs = this.zone.objs;
-    let out = [];
 
-    for (let i = 0, j = 0; j < gameIndexesLength; i++) {
-      const obj = objs[gameIndexes[i]];
-      if (obj) {
-        if (
-          (target.props.x + target.props.w) >= obj.props.x &&
-          target.props.x <= (obj.props.x + obj.props.w) &&
-          target.props.y <= (obj.props.y + obj.props.h) &&
-          (target.props.y + target.props.h) >= obj.props.y &&
-          index !== i
-        ) {
-          out.push(obj);
-        }
-        j++;
+  collisionCalc(target, index) {
+    let out = [];
+    this.walkThroughGameObjects((obj, i) => {
+      if (
+        (target.props.x + target.props.w) >= obj.props.x &&
+        target.props.x <= (obj.props.x + obj.props.w) &&
+        target.props.y <= (obj.props.y + obj.props.h) &&
+        (target.props.y + target.props.h) >= obj.props.y &&
+        index !== i
+      ) {
+        out.push(obj);
       }
-    }
+    });
     return out;
   }
 

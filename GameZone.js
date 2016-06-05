@@ -36,8 +36,8 @@ class GameZone {
     const indexes = this.objectsIndexes;
     const l = indexes.length;
     for (let i = 0; i < l; i++) {
-      if (!indexes[i]) {
-        return i;
+      if (!indexes[i] ) {
+          return i;
       }
     }
   }

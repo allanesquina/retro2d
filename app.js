@@ -42,6 +42,6 @@ fightZone.setState({
 });
 
 // Config
-let game = new Game('stage', 500, 300);
+let game = new Game('stage', 500, 300, 10);
 game.setZone(fightZone);
 game.render();
