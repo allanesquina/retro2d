@@ -37,7 +37,7 @@ fightZone.connect(textCache);
 fightZone.connect(enemyCtr);
 fightZone.setState({
   msg: 'Waiting',
-  ammo: 500,
+  ammo: 10500,
   cache: 1000
 });
 

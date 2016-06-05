@@ -6,7 +6,7 @@ class Player extends GameObject {
 
   onEnterFrame(game) {
     const speed = 10;
-    const frameRateLimit = 60;
+    const frameRateLimit = 0;
 
     if (this.props.isShooting) {
       if (!this.props.interval) {

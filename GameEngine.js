@@ -9,8 +9,8 @@ class Game {
       }
     };
 
-    this.objs = [];
     this.render = this.render.bind(this);
+    this.gameObjectInteration = this.gameObjectInteration.bind(this);
 
     this.bindEvents();
   }
@@ -27,49 +27,68 @@ class Game {
 
   bindEvents() {
     document.addEventListener('keydown', (e) => {
-      this.objs.map((obj) => {
-        (obj.onKeyDown && obj.onKeyDown(e, this.getGameEventObject()));
+      const indexes = this.zone.objectsIndexes;
+      const objs = this.zone.objs;
+      this.zone.objectsIndexes.map((key) => {
+        const obj = objs[key];
+        if (obj) {
+          (obj.onKeyDown && obj.onKeyDown(e, this.getGameEventObject()));
+        }
       });
     });
 
     document.addEventListener('keyup', (e) => {
-      this.objs.map((obj) => {
-        (obj.onKeyUp && obj.onKeyUp(e, this.getGameEventObject()));
+      const indexes = this.zone.objectsIndexes;
+      const objs = this.zone.objs;
+      this.zone.objectsIndexes.map((key) => {
+        const obj = objs[key];
+        if (obj) {
+          (obj.onKeyUp && obj.onKeyUp(e, this.getGameEventObject()));
+        }
       });
     });
 
     document.addEventListener('keypress', (e) => {
-      this.objs.map((obj) => {
-        (obj.onKeyPress && obj.onKeyPress(e, this.getGameEventObject()));
+      const indexes = this.zone.objectsIndexes;
+      const objs = this.zone.objs;
+      this.zone.objectsIndexes.map((key) => {
+        const obj = objs[key];
+        if (obj) {
+          (obj.onKeyPress && obj.onKeyPress(e, this.getGameEventObject()));
+        }
       });
     });
   }
-
 
   cicle() {
     window.requestAnimationFrame(this.render);
   }
 
   render() {
+    // const { indexes, indexesLength, objs } = this.zone;
     this.context.clearRect(0, 0, this.state.stage.width, this.state.stage.height);
-    this.objs.map((obj, index) => {
-      (obj.stateToProp && obj.stateToProp(this.getGameEventObject()));
-      (obj.onEnterFrame && obj.onEnterFrame(this.getGameEventObject()));
-      obj.render(this.context, this.state);
-      (obj.onCollision && obj.onCollision(this.collisionCalc(obj, index, this.objs), this.getGameEventObject()));
-    });
+    const indexes = this.zone.objectsIndexes;
+    const indexesLength = this.zone.objectsIndexesLength;
+    const objs = this.zone.objs;
+
+    for (let i = 0, j = 0; j < this.zone.objectsIndexesLength; i++) {
+      const obj = objs[indexes[i]];
+      if (obj) {
+        (obj.stateToProp && obj.stateToProp(this.getGameEventObject()));
+        (obj.onEnterFrame && obj.onEnterFrame(this.getGameEventObject()));
+        obj.render(this.context, this.state);
+        (obj.onCollision && obj.onCollision(this.collisionCalc(obj, i, indexes), this.getGameEventObject()));
+        j++;
+      }
+    }
+
     this.cicle();
   }
 
-  connect(Component) {
-    const index = this.objs.push(Component);
-    Component.setDisconnectFn(() => {
-      delete this.objs[index-1];
-    });
+  gameObjectInteration(fn) {
   }
 
   setZone(zone) {
-    this.objs = zone.objs;
     this.zone = zone;
   }
 
@@ -81,15 +100,28 @@ class Game {
     }
   }
 
-  collisionCalc(target, index, objs) {
-    return objs.filter((obj, j) => {
-      return (
-        (target.props.x + target.props.w) >= obj.props.x &&
-        target.props.x <= (obj.props.x + obj.props.w) &&
-        target.props.y <= (obj.props.y + obj.props.h) &&
-        (target.props.y + target.props.h) >= obj.props.y &&
-        index !== j
-      );
-    });
+  collisionCalc(target, index, indexes) {
+    const gameIndexes = this.zone.objectsIndexes;
+    const gameIndexesLength = this.zone.objectsIndexesLength;
+    const objs = this.zone.objs;
+    let out = [];
+
+    for (let i = 0, j = 0; j < gameIndexesLength; i++) {
+      const obj = objs[gameIndexes[i]];
+      if (obj) {
+        if (
+          (target.props.x + target.props.w) >= obj.props.x &&
+          target.props.x <= (obj.props.x + obj.props.w) &&
+          target.props.y <= (obj.props.y + obj.props.h) &&
+          (target.props.y + target.props.h) >= obj.props.y &&
+          index !== i
+        ) {
+          out.push(obj);
+        }
+        j++;
+      }
+    }
+    return out;
   }
+
 };

@@ -13,7 +13,7 @@ class EnemyController extends GameObject {
   }
 
   onEnterFrame(game) {
-    let frameRateLimit = 150;
+    let frameRateLimit = 0;
     if (!this.props.interval) {
       this.props.interval = setTimeout(() => {
         game.connect(new Enemy({
@@ -23,7 +23,32 @@ class EnemyController extends GameObject {
           w: 25,
           h: 25
         }));
-
+        //
+        game.connect(new EnemyShake({
+          type: 'rect',
+          x: getRandomInt(10, (game.globalState.stage.width - 30)),
+          y: 0,
+          w: 10,
+          h: 10,
+          speed: getRandomInt(1, 13)
+        }));
+        game.connect(new EnemyShake({
+          type: 'rect',
+          x: getRandomInt(10, (game.globalState.stage.width - 30)),
+          y: 0,
+          w: 10,
+          h: 10,
+          speed: getRandomInt(1, 13)
+        }));
+        game.connect(new EnemyShake({
+          type: 'rect',
+          x: getRandomInt(10, (game.globalState.stage.width - 30)),
+          y: 0,
+          w: 10,
+          h: 10,
+          speed: getRandomInt(1, 13)
+        }));
+        //
         this.props.interval = undefined;
       }, frameRateLimit);
     }
