@@ -1,11 +1,15 @@
+
 let player = new Player({
   name: 'Player',
   isShoting: false,
-  type: 'rect',
+  type: 'sprite',
+  sprite: 'img/Ligher.png',
   x: 0,
-  y: 270,
-  w: 30,
-  h:30
+  y: 250,
+  w: 32,
+  h: 32,
+  sx: 0,
+  sy: 0
 });
 
 let textAmmo = new AmmoComponent({
@@ -30,18 +34,26 @@ let textCache = new TextCache({
   y: 25
 });
 
-let fightZone = new GameZone();
+let testSprite = new TestSprite({
+  name: 'Sprite',
+  x: 230,
+  y: 25
+});
+
+
+// Config
+let game = new Game('stage', 500, 300, 15);
+let fightZone = new GameZone(game.context);
 fightZone.connect(player);
 fightZone.connect(textAmmo);
 fightZone.connect(textCache);
 fightZone.connect(enemyCtr);
+// fightZone.connect(testSprite);
 fightZone.setState({
   msg: 'Waiting',
   ammo: 10500,
   cache: 1000
 });
 
-// Config
-let game = new Game('stage', 500, 300, 10);
 game.setZone(fightZone);
 game.render();

@@ -3,6 +3,7 @@ class AmmoComponent extends GameObject {
     super(props);
     this.props = props;
   }
+  
   stateToProp(game) {
     this.props.text = game.state.ammo;
   }

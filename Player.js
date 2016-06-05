@@ -2,11 +2,12 @@ class Player extends GameObject {
   constructor(props) {
     super(props);
     this.props = props;
+
   }
 
   onEnterFrame(game) {
-    const speed = 10;
-    const frameRateLimit = 50;
+    const speed = 8;
+    const frameRateLimit = 100;
 
     if (this.props.isShooting) {
       if (!this.props.interval) {
@@ -17,10 +18,10 @@ class Player extends GameObject {
             game.connect(new Bullet({
               name: 'Bullet',
               type: 'rect',
-              x: this.props.x + ((this.props.w / 2) - (5/2)),
+              x: this.props.x + 15,
               y: (game.globalState.stage.height - this.props.h),
-              w: 5,
-              h: 8
+              w: 2,
+              h: 4
             }));
             this.props.interval = undefined;
           }

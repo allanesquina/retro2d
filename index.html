@@ -8,12 +8,16 @@
       background: #000;
       color: #777;
       font-family: Arial;
+      font-size: 12px;
+    }
+    a {
+      color: #999;
     }
     canvas {
       margin: 0 auto;
       border: 1px solid #444;
       display: block;
-      background: #000;
+      background: url('img/space.png');
       width: 70%;
     }
     .info {
@@ -24,7 +28,9 @@
 <body>
   <canvas width="500" height="300" id="stage"></canvas>
   <div class="info">
+    <p>Working in progress yet!</p>
     <p>Use H L to move, B to buy ammo and SPACE or D to open fire</p>
+    <p>Sprites from <a href="http://opengameart.org/" target="_blank">http://opengameart.org/</a></p>
   </div>
   <script src="Utils.js" charset="utf-8"></script>
   <script src="GameEngine.js" charset="utf-8"></script>
@@ -34,6 +40,7 @@
   <script src="TextAmmo.js" charset="utf-8"></script>
   <script src="TextCache.js" charset="utf-8"></script>
   <script src="Player.js" charset="utf-8"></script>
+  <script src="TestSprite.js" charset="utf-8"></script>
   <script src="Enemy.js" charset="utf-8"></script>
   <script src="EnemyController.js" charset="utf-8"></script>
   <script src="app.js" charset="utf-8"></script>

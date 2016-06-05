@@ -40,9 +40,9 @@ class EnemyShake extends GameObject {
   }
 
   onEnterFrame(game) {
-    this.props.y = (this.props.y + this.props.speed) + Math.pow(this.props.y, 0.15);
-    this.props.w = (this.props.w + .1);
-    this.props.h = (this.props.h + .1);
+    this.props.y = Math.round((this.props.y + this.props.speed) + Math.pow(this.props.y, 0.15));
+    this.props.w = (this.props.w + 1);
+    this.props.h = (this.props.h + 1);
     if (this.props.y  > game.globalState.stage.height) {
       this.disconnect();
     }

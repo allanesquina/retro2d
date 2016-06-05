@@ -14,6 +14,7 @@ class Game {
     this.walkThroughGameObjects = this.walkThroughGameObjects.bind(this);
 
     this.bindEvents();
+    window.context = this.context;
   }
 
   getGameEventObject() {

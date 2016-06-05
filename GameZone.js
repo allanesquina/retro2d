@@ -1,5 +1,5 @@
 class GameZone {
-  constructor() {
+  constructor(context) {
     this.state = {};
     this.objs = {};
     this.objectsIndexes = new Array(20000);
@@ -7,6 +7,7 @@ class GameZone {
     this.connect = this.connect.bind(this);
     this.availableKeys = ['a', 'b', 'c', 'd'];
     this.availableKeysCount = 0;
+    this.context = context;
   }
 
   connect(gameObject) {
@@ -20,9 +21,9 @@ class GameZone {
 
     gameObject.setDisconnectFn(() => {
       delete this.objs[key];
-      this.objectsIndexes[index] = null;
+      this.objectsIndexes[index] = undefined;
       this.objectsIndexesLength = this.objectsIndexesLength - 1;
-    });
+    }, this.context);
   }
 
   getAvailableKey() {
