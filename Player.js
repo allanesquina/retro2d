@@ -2,30 +2,28 @@ class Player extends GameObject {
   constructor(props) {
     super(props);
     this.props = props;
-
   }
 
   onEnterFrame(game) {
     const speed = 8;
-    const frameRateLimit = 100;
 
     if (this.props.isShooting) {
-      if (!this.props.interval) {
-        this.props.interval = setTimeout(() => {
-          if (game.state.ammo > 0) {
-            game.setState({ammo: game.state.ammo - 1});
+      const time = Date.now() / 1000;
+      if (time > this.lastTime + .051) {
+        this.lastTime = time;
+        if (game.state.ammo > 0) {
+          game.setState({ammo: game.state.ammo - 1});
 
-            game.connect(new Bullet({
-              name: 'Bullet',
-              type: 'rect',
-              x: this.props.x + 15,
-              y: (game.globalState.stage.height - this.props.h),
-              w: 2,
-              h: 4
-            }));
-            this.props.interval = undefined;
-          }
-        }, frameRateLimit);
+          game.connect(new Bullet({
+            name: 'Bullet',
+            type: 'rect',
+            x: this.props.x + 15,
+            y: (game.globalState.stage.height - this.props.h),
+            w: 2,
+            h: 4
+          }));
+          this.props.interval = undefined;
+        }
       }
     }
 

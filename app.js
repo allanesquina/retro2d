@@ -44,9 +44,9 @@ let testSprite = new TestSprite({
 // Config
 let game = new Game('stage', 500, 300, 15);
 let fightZone = new GameZone(game.context);
-fightZone.connect(player);
 fightZone.connect(textAmmo);
 fightZone.connect(textCache);
+fightZone.connect(player);
 fightZone.connect(enemyCtr);
 // fightZone.connect(testSprite);
 fightZone.setState({
@@ -56,4 +56,4 @@ fightZone.setState({
 });
 
 game.setZone(fightZone);
-game.render();
+game.start();

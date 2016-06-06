@@ -4,40 +4,36 @@ class GameZone {
     this.objs = {};
     this.objectsIndexes = new Array(20000);
     this.objectsIndexesLength = 0;
+    this.objectsIndexesToChange = new Array(200);
+    this.objectsIndexesToChangeLength = 0;
+    this.objectsIndexesToAdd = new Array(200);
+    this.objectsIndexesToAddLength = 0;
     this.connect = this.connect.bind(this);
-    this.availableKeys = ['a', 'b', 'c', 'd'];
     this.availableKeysCount = 0;
     this.context = context;
+    this.renderIsRunning = false;
   }
 
   connect(gameObject) {
     const index = this.getNextAvailableIndex();
-    const key = this.getAvailableKey() + index;
-
-    this.objectsIndexesLength = this.objectsIndexesLength + 1;
-    this.objs[key] = gameObject;
-    this.objectsIndexes[index] = key;
-    this.availableKeysCount++;
-
+    if (this.renderIsRunning) {
+      this.objectsIndexesToAdd[this.objectsIndexesToAddLength++] = { index, gameObject };
+    } else {
+      this.objs[index] = gameObject;
+      this.objectsIndexes[index] = index;
+      this.objectsIndexesLength += 1;
+    }
     gameObject.setDisconnectFn(() => {
-      delete this.objs[key];
-      this.objectsIndexes[index] = undefined;
-      this.objectsIndexesLength = this.objectsIndexesLength - 1;
+      this.objectsIndexesToChange[this.objectsIndexesToChangeLength++] = index;
     }, this.context);
   }
 
-  getAvailableKey() {
-    if (this.availableKeysCount > 3) {
-      this.availableKeysCount = 0;
-    }
-    return this.availableKeys[this.availableKeysCount];
-  }
 
   getNextAvailableIndex() {
     const indexes = this.objectsIndexes;
     const l = indexes.length;
-    for (let i = 0; i < l; i++) {
-      if (!indexes[i] ) {
+    for (let i = 1; i < l; i++) {
+      if (!indexes[i]) {
           return i;
       }
     }
@@ -49,6 +45,29 @@ class GameZone {
         this.state[k] = newState[k];
       }
     }
+  }
+
+  removeGameObjectIndexes() {
+    const indexes = this.objectsIndexesToChange;
+    const l = this.objectsIndexesToChangeLength;
+    for (let i = 0; i < l; i++) {
+      delete this.objs[indexes[i]];
+      this.objectsIndexes[indexes[i]] = undefined;
+      this.objectsIndexesLength -= 1;
+    }
+    this.objectsIndexesToChangeLength = 0;
+  }
+
+  addGameObjectIndexes() {
+    const indexes = this.objectsIndexesToAdd;
+    const l = this.objectsIndexesToAddLength;
+    for (let i = 0; i < l; i++) {
+      const obj = indexes[i];
+      this.objs[obj.index] = obj.gameObject;
+      this.objectsIndexes[obj.index] = obj.index;
+      this.objectsIndexesLength += 1;
+    }
+    this.objectsIndexesToAddLength = 0;
   }
 
 

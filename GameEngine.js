@@ -2,6 +2,10 @@ class Game {
   constructor(id, w, h, frameSkip) {
     this.canvas = document.getElementById(id || 'stage');
     this.context = this.canvas.getContext('2d');
+    this.lastTime = Date.now() / 1000;
+    this.lastTimeEvent1 = Date.now() / 1000;
+    this.lastTimeEvent2 = Date.now() / 1000;
+    this.lastTimeEvent3 = Date.now() / 1000;
     this.state = {
       stage: {
         height: h,
@@ -29,21 +33,15 @@ class Game {
 
   bindEvents() {
     document.addEventListener('keydown', (e) => {
-      this.walkThroughGameObjects((obj, i) => {
-        (obj.onKeyDown && obj.onKeyDown(e, this.getGameEventObject()));
-      });
+        this.walkThroughGameObjects((obj, i) => {
+          (obj.onKeyDown && obj.onKeyDown(e, this.getGameEventObject()));
+        });
     });
 
     document.addEventListener('keyup', (e) => {
-      this.walkThroughGameObjects((obj, i) => {
-        (obj.onKeyUp && obj.onKeyUp(e, this.getGameEventObject()));
-      });
-    });
-
-    document.addEventListener('keypress', (e) => {
-      this.walkThroughGameObjects((obj, i) => {
-        (obj.onKeyPress && obj.onKeyPress(e, this.getGameEventObject()));
-      });
+        this.walkThroughGameObjects((obj, i) => {
+          (obj.onKeyUp && obj.onKeyUp(e, this.getGameEventObject()));
+        });
     });
   }
 
@@ -51,18 +49,24 @@ class Game {
     window.requestAnimationFrame(this.render);
   }
 
+  start() {
+    this.zone.renderIsRunning = true;
+    this.render();
+  }
+
   render() {
-    if (!this.interval) {
-      this.interval = setTimeout(() => {
-        this.interval = null;
-        this.context.clearRect(0, 0, this.state.stage.width, this.state.stage.height);
-        this.walkThroughGameObjects((obj, i) => {
-          (obj.stateToProp && obj.stateToProp(this.getGameEventObject()));
-          (obj.onEnterFrame && obj.onEnterFrame(this.getGameEventObject()));
-          obj.render(this.context, this.state);
-          (obj.onCollision && obj.onCollision(this.collisionCalc(obj, i), this.getGameEventObject()));
-        });
-      }, this.state.stage.frameSkip);
+    const time = Date.now() / 1000;
+    if (time > this.lastTime + 0.013) {
+      this.zone.addGameObjectIndexes();
+      this.zone.removeGameObjectIndexes();
+      this.lastTime = time;
+      this.context.clearRect(0, 0, this.state.stage.width, this.state.stage.height);
+      this.walkThroughGameObjects((obj, i) => {
+        (obj.stateToProp && obj.stateToProp(this.getGameEventObject()));
+        (obj.onEnterFrame && obj.onEnterFrame(this.getGameEventObject()));
+        obj.render(this.context, this.state);
+        (obj.onCollision && obj.onCollision(this.collisionCalc(obj, i), this.getGameEventObject()));
+      });
     }
 
     this.cicle();
@@ -72,7 +76,7 @@ class Game {
     const gameIndexes = this.zone.objectsIndexes;
     const gameIndexesLength = this.zone.objectsIndexesLength;
     const objs = this.zone.objs;
-    const margin = this.state.stage.frameSkip === 0 ? 300 : 60;
+    const margin = 1999;
     let i = 0;
     let j = 0;
     let n = 0;

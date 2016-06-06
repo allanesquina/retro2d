@@ -2,6 +2,7 @@ class GameObject {
   constructor(props) {
     this.props = props;
     this.lastProps = Object.assign({}, props);
+    this.lastTime = Date.now() / 1000;
 
     if (props.sprite) {
       this.sprite =  new Image();
