@@ -12,6 +12,9 @@ class GameZone {
     this.availableKeysCount = 0;
     this.context = context;
     this.renderIsRunning = false;
+    this.a = new Audio('audio/music1.ogg');
+    this.a.volume = 1;
+    this.a.play();
   }
 
   connect(gameObject) {
@@ -62,9 +65,9 @@ class GameZone {
     const indexes = this.objectsIndexesToAdd;
     const l = this.objectsIndexesToAddLength;
     for (let i = 0; i < l; i++) {
-      const obj = indexes[i];
-      this.objs[obj.index] = obj.gameObject;
-      this.objectsIndexes[obj.index] = obj.index;
+      const {index, gameObject } = indexes[i];
+      this.objs[index] = gameObject;
+      this.objectsIndexes[index] = index;
       this.objectsIndexesLength += 1;
     }
     this.objectsIndexesToAddLength = 0;

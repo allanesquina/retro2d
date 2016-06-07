@@ -57,3 +57,8 @@ fightZone.setState({
 
 game.setZone(fightZone);
 game.start();
+
+let i = 0;
+setInterval(() => {
+  game.canvas.style.backgroundPositionY = i++ + 'px';
+}, 70);

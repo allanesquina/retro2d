@@ -20,6 +20,8 @@ class Enemy extends GameObject {
       objs.map((obj) => {
         if (obj.props.name === 'Bullet') {
           game.setState({cache: game.state.cache + 10});
+          this.props.audio.currentTime = 0;
+          this.props.audio.play();
           this.disconnect();
           obj.disconnect();
         }

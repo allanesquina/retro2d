@@ -20,7 +20,7 @@ class GameObject {
     switch (this.props.type) {
       case 'rect':
         // ctx.clearRect(this.lastProps.x, this.lastProps.y, this.lastProps.w, this.lastProps.h);
-        ctx.fillStyle = '#fff';
+        ctx.fillStyle = this.props.color || '#fff';
         ctx.fillRect(this.props.x, this.props.y, this.props.w, this.props.h);
         break;
       case 'text':

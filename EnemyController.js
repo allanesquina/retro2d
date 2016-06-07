@@ -2,6 +2,8 @@ class EnemyController extends GameObject {
   constructor(props) {
     super(props);
     this.props = props;
+    this.audio = new Audio('audio/explosion.wav');
+    this.audio.volume = .6;
     this.enemyOptions = ['Ninja', 'Paranoid', 'UFO', 'Saboteur'];
   }
 
@@ -15,7 +17,7 @@ class EnemyController extends GameObject {
 
   onEnterFrame(game) {
     const time = Date.now() / 1000;
-    if (time > this.lastTime + .5) {
+    if (time > this.lastTime + .4) {
       this.lastTime = time;
       game.connect(new Enemy({
         type: 'sprite',
@@ -25,7 +27,8 @@ class EnemyController extends GameObject {
         w: 32,
         h: 32,
         sx: 0,
-        sy: 0
+        sy: 0,
+        audio: this.audio
       }));
     }
   }

@@ -2,6 +2,10 @@ class Player extends GameObject {
   constructor(props) {
     super(props);
     this.props = props;
+    this.a = new Audio('audio/Laser2.wav');
+    this.b = new Audio('audio/shot1.wav');
+    this.a.volume = .4;
+    this.b.volume = .3;
   }
 
   onEnterFrame(game) {
@@ -9,20 +13,24 @@ class Player extends GameObject {
 
     if (this.props.isShooting) {
       const time = Date.now() / 1000;
-      if (time > this.lastTime + .051) {
+      if (time > this.lastTime + .1) {
         this.lastTime = time;
         if (game.state.ammo > 0) {
           game.setState({ammo: game.state.ammo - 1});
 
+          this.a.currentTime = 0;
+          this.a.play();
+          // this.b.currentTime = 0;
+          // this.b.play();
           game.connect(new Bullet({
             name: 'Bullet',
             type: 'rect',
             x: this.props.x + 15,
             y: (game.globalState.stage.height - this.props.h),
             w: 2,
-            h: 4
+            h: 10,
+            color: '#CCF788'
           }));
-          this.props.interval = undefined;
         }
       }
     }
